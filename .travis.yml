@@ -2,6 +2,9 @@ language: java
 dist: xenial
 jdk: openjdk8
 
+services:
+  - docker
+
 env:
   - TRAVIS_NODE_VERSION="lts/*"
 
@@ -11,6 +14,8 @@ cache:
     - $HOME/.npm
 
 before_install:
+  - echo 'DOCKER_OPTS="$DOCKER_OPTS --debug --registry-mirror=https://mirror.gcr.io"'
+  - sudo service docker restart
   - 'if [[ -n "$DECRYPT_KEYPHRASE" ]]; then openssl aes-256-cbc -d -pass "env:DECRYPT_KEYPHRASE" -in .gnupg.tar.enc | tar xv; fi'
   - 'nvm install ${TRAVIS_NODE_VERSION} && nvm use ${TRAVIS_NODE_VERSION}'
 
